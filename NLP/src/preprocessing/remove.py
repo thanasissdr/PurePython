@@ -21,6 +21,9 @@ class StringRemove(StringTokenize):
             return self
         return inner
 
+    def simple_tokenize(self):
+        return self.tokenize(pattern='\s+')
+
     @remove_something
     def remove_digits(self):
         return string.digits
@@ -36,5 +39,19 @@ class StringRemove(StringTokenize):
     
     
     def remove_inner_space(self):
-        self.string = " ".join(self.tokenize(pattern='\s+'))
+        tokenized = self.simple_tokenize()
+        self.string = " ".join(tokenized)
         return self
+
+
+
+    def remove_stopwords(self, stopwords):
+        tokenized = self.simple_tokenize()
+        string = " "
+        for w in tokenized:
+            if w not in stopwords:
+                string += " " + w
+        self.string =  string.strip()
+        return self
+
+
