@@ -1,8 +1,8 @@
 import copy
 from typing import Set
 
-class StopWords:
 
+class StopWords:
     def __init__(self, stopwords=set()):
         self.stopwords = copy.copy(stopwords)
 

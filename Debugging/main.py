@@ -8,12 +8,12 @@ print(x_squared)
 
 print(Simple(20).squared())
 for _ in range(10):
-    print('The weather is good')
+    print("The weather is good")
 
-print(Simple('a').squared())
+print(Simple("a").squared())
 
-try:    
-    print('The weather today'**2)
+try:
+    print("The weather today" ** 2)
 except:
     raise TypeError("Type error")
 
