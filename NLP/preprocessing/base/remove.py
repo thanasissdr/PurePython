@@ -1,5 +1,5 @@
 import string
-from src.preprocessing.tokenize import StringTokenize
+from base.tokenize import StringTokenize
 
 
 class StringRemove(StringTokenize):

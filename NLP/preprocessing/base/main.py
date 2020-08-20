@@ -1,8 +1,8 @@
 import re
-from src.preprocessing.stem_lemma import StemLemmatize
-from src.preprocessing.convert import StringConvert
-from src.preprocessing.remove import StringRemove
-from src.preprocessing.string_is import StringIs
+from .stem_lemma import StemLemmatize
+from .convert import StringConvert
+from .remove import StringRemove
+from .string_is import StringIs
 
 
 class StringSentence(StringIs, StringRemove, StringConvert):
@@ -36,3 +36,4 @@ class StringSentence(StringIs, StringRemove, StringConvert):
         string_list = [StemLemmatize(i).lemmatized().string for i in self.tokenize()]
         self.string = " ".join(string_list)
         return self
+
