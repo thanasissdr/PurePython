@@ -1,39 +1,22 @@
-from abc import ABC, abstractmethod
-from base.main import StringSentence
+from typing import List
 
 
-class ProcessorCreator(ABC):
-    @abstractmethod
-    def process(self):
-        pass
+class Preprocess:
+    def __init__(self, s: str):
+        self.s = s
 
+    def preprocess(self, preprocessor):
+        self.s = preprocessor.process(self.s)
+        return self
 
-class WhiteSpaceProcessor(ProcessorCreator):
-    def process(self, s: str):
-        processed_s = (
-            StringSentence(s).remove_outer_space().remove_inner_space().to_lower()
-        )
-        return processed_s.string
+    def tokenize(self, tokenizer):
+        tokenized_s = tokenizer.tokenize(self.s)
+        return tokenized_s
 
+    @staticmethod
+    def join_string(string_list: List):
+        return " ".join(string_list)
 
-class WhiteSpacePunctuationProcessor(ProcessorCreator):
-    def __init__(self, keep_space=True):
-        self.keep_space = keep_space
-
-    def process(self, s: str):
-        processed_s = (
-            StringSentence(s)
-            .remove_outer_space()
-            .remove_inner_space()
-            .remove_punctuation(keep_space=self.keep_space)
-            .to_lower()
-        )
-        return processed_s.string
-
-
-print(
-    WhiteSpacePunctuationProcessor(keep_space=False).process(
-        "lskjdflj 234!#!#$!@#$!#$!@#$#!$!@#$!32          lk3j1l3kj4l3 k4l12jk3 4l1k32j 4l13j24          s       "
-    )
-)
-
+    def run(self, processor, tokenizer):
+        tokenized_s = self.preprocess(processor).tokenize(tokenizer)
+        return self.join_string(tokenized_s)

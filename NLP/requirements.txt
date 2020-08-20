@@ -1,0 +1,2 @@
+nltk==3.5
+python_Levenshtein==0.12.0

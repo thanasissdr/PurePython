@@ -1,8 +1,8 @@
 import re
-from .stem_lemma import StemLemmatize
-from .convert import StringConvert
-from .remove import StringRemove
-from .string_is import StringIs
+from preprocessing.base.stem_lemma import StemLemmatize
+from preprocessing.base.convert import StringConvert
+from preprocessing.base.remove import StringRemove
+from preprocessing.base.string_is import StringIs
 
 
 class StringSentence(StringIs, StringRemove, StringConvert):

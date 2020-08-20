@@ -1,5 +1,5 @@
 from abc import ABC, abstractmethod
-from base.tokenize import StringTokenize
+from preprocessing.base.tokenize import StringTokenize
 
 
 class TokenizerCreator(ABC):
