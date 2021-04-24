@@ -5,10 +5,25 @@
     "version": "0.2.0",
     "configurations": [
         {
-            "name": "Python: Current File",
+            "name": "exceptions.py",
             "type": "python",
             "request": "launch",
-            "program": "${file}",
+            "python": "C:/Users/thanos/anaconda3/envs/pure-python/python.exe",
+            "program": "${workspaceFolder}/Exceptions/exceptions.py",
+            "env": {
+                "PYTHONPATH": "${workspaceFolder}"
+            },
+            "console": "integratedTerminal"
+        },
+        {
+            "name": "module exceptions.py",
+            "type": "python",
+            "request": "launch",
+            "python": "C:/Users/thanos/anaconda3/envs/pure-python/python.exe",
+            "module": "Exceptions.exceptions",
+            "env": {
+                "PYTHONPATH": "${workspaceFolder}"
+            },
             "console": "integratedTerminal"
         }
     ]

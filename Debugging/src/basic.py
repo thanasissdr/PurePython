@@ -1,6 +1,3 @@
-import numpy as np
-
-
 class Simple:
     def __init__(self, a):
         self.a = a
