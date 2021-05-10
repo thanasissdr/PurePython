@@ -1,5 +1,4 @@
 import copy
-from typing import Set
 
 
 class StopWords:

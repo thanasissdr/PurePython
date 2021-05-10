@@ -1,39 +1,31 @@
-import re
-from preprocessing.base.stem_lemma import StemLemmatize
-from preprocessing.base.convert import StringConvert
-from preprocessing.base.remove import StringRemove
-from preprocessing.base.string_is import StringIs
+from preprocessing.base.sentences.convert_case import CaseConverter
+from preprocessing.base.sentences.remove_punctuation import PunctuationRemover
+from preprocessing.base.sentences.replace_token import TokenReplacer
 
 
-class StringSentence(StringIs, StringRemove, StringConvert):
-    """
-    This class will manipulate sentences as a string.
-    """
+class SentenceModifier:
+    def __init__(self):
+        pass
 
-    def __init__(self, string):
-        self.string = string
+    def run(self, sentence):
+        self.sentence = sentence.copy()
 
-    def sub_pattern(pattern_to_replace):
-        def wrapper(g):
-            def inner(self):
-                pattern = re.compile(pattern_to_replace)
-                self.string = pattern.sub(g, self.string)
-                return self
+        self.replace_tokens()
+        self.case_converter()
+        self.remove_punctuation()
 
-            return inner
+    def replace_token(self):
+        token_replacer = TokenReplacer()
+        self.sentence = token_replacer.replace_emails()
+        return self
 
-        return wrapper
+    def case_convert(self):
+        case_converter = CaseConverter()
+        self.sentence = case_converter.to_lower(self.sentence)
+        return self
 
-    @sub_pattern(StringIs.DIGIT)
-    def replace_numbers(self):
-        return "#num#"
-
-    @sub_pattern(f"\s?{StringIs.URL}\s?")
-    def replace_urls(self):
-        return " #link# "
-
-    def lemmatize(self):
-        string_list = [StemLemmatize(i).lemmatized().string for i in self.tokenize()]
-        self.string = " ".join(string_list)
+    def remove_punctuation(self, sentence):
+        punctuation_remover = PunctuationRemover()
+        self.sentence = punctuation_remover.remove_punctuation(self.sentence)
         return self
 

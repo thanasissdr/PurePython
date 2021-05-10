@@ -2,12 +2,13 @@ from typing import List
 
 
 class Preprocess:
-    def __init__(self, s: str):
-        self.s = s
+    def __init__(self, preprocessor, tokenizer):
+        self.preprocessor = preprocessor
+        self.tokenizer = tokenizer
 
-    def preprocess(self, preprocessor):
-        self.s = preprocessor.process(self.s)
-        return self
+    def preprocess(self, s):
+        preprocessed_s = self.preprocessor.process(s)
+        return preprocessed_s
 
     def tokenize(self, tokenizer):
         tokenized_s = tokenizer.tokenize(self.s)
@@ -17,6 +18,7 @@ class Preprocess:
     def join_string(string_list: List):
         return " ".join(string_list)
 
-    def run(self, processor, tokenizer):
-        tokenized_s = self.preprocess(processor).tokenize(tokenizer)
+    def run(self, s):
+        preprocessed_s = self.preprocess(s)
+        tokenized_s = self.tokenizer.tokenize(preprocessed_s)
         return self.join_string(tokenized_s)
