@@ -1,40 +1,30 @@
 from nltk.stem import PorterStemmer, SnowballStemmer, WordNetLemmatizer
 
 
-class StemLemmatizer:
-    def __init__(self):
-        pass
+class StemLemmatizerStringBase:
+    def __init__(self, stemmer, lemmatizer):
+        self.stemmer = stemmer
+        self.lemmatizer = lemmatizer
 
     def stemmed(self, string):
-        stemmer = SnowballStemmer(language="english")
-        stemmed_string = stemmer.stem(string)
+        stemmed_string = self.stemmer.stem(string)
         return stemmed_string
 
-    def lemmatized(self, string):
-        lemmatizer = WordNetLemmatizer()
-        for pos in ["v", "n", "a"]:
-            lemmatized_string = lemmatizer.lemmatize(string, pos=pos)
-        return lemmatized_string
+    def lemmatize(self, string):
+        tmp_lemma = self.lemmatizer.lemmatize(string, pos="v")
+        for pos in ["n", "a"]:
+            lemmatized_string = self.lemmatizer.lemmatize(string, pos=pos)
+            if len(lemmatized_string) < len(tmp_lemma):
+                tmp_lemma = lemmatized_string
+        return tmp_lemma
 
     def lemma_stemmed(self, string):
-        lemmatized_string = self.lemmatized(string)
+        lemmatized_string = self.lemmatize(string)
         return self.stemmed(lemmatized_string)
 
 
-if __name__ == "__main__":
-
-    strings = [
-        "butterflies",
-        "children",
-        "child",
-        "training",
-        "untrained",
-        "rhymes",
-        "flies",
-    ]
-
-    stemmed_lemmatizer = StemLemmatizer()
-    print("\n")
-    for s in strings:
-        print(f"{s} -> {stemmed_lemmatizer.lemma_stemmed(s)}")
-
+class StemLemmatizerString(StemLemmatizerStringBase):
+    def __init__(self):
+        super().__init__(
+            stemmer=SnowballStemmer(language="english"), lemmatizer=WordNetLemmatizer()
+        )

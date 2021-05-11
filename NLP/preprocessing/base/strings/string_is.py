@@ -15,7 +15,7 @@ class StringIsRegex(StringIs):
     This class only will refer to base strings, not sentences.
     """
 
-    URL = r"((http|https)://)?(www\.)?[a-zA-Z0-9\-]+(\.[a-zA-Z\-]{2,256}){1,3}(/[a-zA-Z0-9]*)*([a-zA-Z-0-9\\&=\?\~\.\-\+]+)*"
+    URL = r"((http|https)://)?(www\.)?[a-zA-Z0-9\-]{2,}(\.[a-zA-Z\-]{2,256}){1,3}(/[a-zA-Z0-9]*)*([a-zA-Z-0-9\\&=\?\~\.\-\+]+)*"
 
     EMAIL = (
         r"[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]{2,3}(\.[a-zA-Z0-9\-\.]{2,3})?"

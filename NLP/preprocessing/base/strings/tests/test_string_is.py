@@ -28,6 +28,7 @@ class TestStringIs(unittest.TestCase):
             ("abcd@sldkf@abc.com", False),
             ("a@abc.com.comm", False),
             ("a@abcdefg.co.co.uk.", False),
+            ("@abc.com", False),
         ]
     )
     def test_not_email(self, input, expected):
@@ -42,16 +43,23 @@ class TestStringIs(unittest.TestCase):
             ("www.google.co.uk", True),
             ("www.google.com/uk", True),
             ("google.com", True),
-            ("www.diigo.com/~tautao", True),
-            ("http://tr.im/imji", True),
-            ("http://apps.facebook.com/dogbook/profile/view/6176014", True),
+            ("www.abc.com/~tau", True),
+            ("http://tb.fr/imjo", True),
+            ("http://apps.fore.com/dogbook/profile/view/1234", True),
         ]
     )
     def test_is_url(self, input, expected):
 
         self.assertEqual(self.string_is.is_url(input), expected)
 
-    @parameterized.expand([("today...but", False)])
+    @parameterized.expand(
+        [
+            ("today...but", False),
+            ("http:///www.google.com", False),
+            ("https:/www.google.com", False),
+            ("www.t.com", False),
+        ]
+    )
     def test_not_url(self, input, expected):
 
         self.assertEqual(self.string_is.is_url(input), expected)
