@@ -1,5 +1,5 @@
 nltk==3.6.4
-numpy==1.19.2
+numpy==1.22.0
 pandas==1.2.3
 requests==2.25.1
 decorator==4.4.2
