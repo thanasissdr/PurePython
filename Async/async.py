@@ -11,7 +11,6 @@ from functools import wraps
 from concurrent.futures import ProcessPoolExecutor
 
 
-
 def timing_async(f):
     @wraps(f)
     async def inner(*args, **kwargs):
@@ -67,5 +66,5 @@ async def main(n):
 
 
 if __name__ == "__main__":
-    N = 3000
+    N = 100
     print(asyncio.run(main(N)))
