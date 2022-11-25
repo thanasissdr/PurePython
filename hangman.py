@@ -114,7 +114,7 @@ def run(input_string: str, n_tries: int = 5) -> None:
 
             word_found = word_is_found(input_string, hidden_word)
             if word_found:
-                print(f"\CONGRATULATIONS! The hidden word was: {input_string}")
+                print(f"\nCONGRATULATIONS! :) The hidden word was: {input_string}")
                 return None
 
         else:
@@ -126,7 +126,7 @@ def run(input_string: str, n_tries: int = 5) -> None:
             print("\nRemaining n_tries:", n_tries)
             print("Hidden word:", hidden_word)
         else:
-            print(f"The hidden word was: {input_string}")
+            print(f"\nSORRY! :( The hidden word was: {input_string}")
 
 
 if __name__ == "__main__":
