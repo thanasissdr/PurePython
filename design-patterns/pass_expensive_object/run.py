@@ -30,7 +30,7 @@ if __name__ == "__main__":
     main.setup(seconds=4)
 
     ch1 = Child1()
-    ch2 = Child2()  
+    ch2 = Child2()
 
     print(main.run(ch1))
     print(main.run(ch2))

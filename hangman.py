@@ -92,7 +92,7 @@ def replace_guess_in_hidden(
     return hidden_word, hidden_word_list
 
 
-def run(input_string: str, n_tries: int = 4):
+def run(input_string: str, n_tries: int = 5) -> None:
     hidden_word = "-" * len(input_string)
     hidden_word_list = list(hidden_word)
 
@@ -114,21 +114,21 @@ def run(input_string: str, n_tries: int = 4):
 
             word_found = word_is_found(input_string, hidden_word)
             if word_found:
-                print(f"\nPerfect! You found the word {input_string}")
-                break
+                print(f"\CONGRATULATIONS! The hidden word was: {input_string}")
+                return None
 
         else:
-            n_tries -= 1
 
             print(next(hangman_state).value)
-            print("\nRemaining n_tries:", n_tries)
-        print("HIDDEN word:", hidden_word)
+            n_tries -= 1
 
-    if n_tries == 0:
-        # print(next(hangman_state).value)
-        print(f"The word was: {input_string}")
+        if n_tries > 0:
+            print("\nRemaining n_tries:", n_tries)
+            print("Hidden word:", hidden_word)
+        else:
+            print(f"The hidden word was: {input_string}")
 
 
 if __name__ == "__main__":
-    input_string = getpass.getpass("Please insert a word:")
-    run(input_string, n_tries=4)
+    hidden_input = getpass.getpass("Please insert a word:")
+    run(hidden_input)

@@ -23,4 +23,3 @@ class TestSimple(unittest.TestCase):
         m = mock.Mock()
         m.squared.return_value = 100
         self.assertEqual(m.squared(), 100)
-
