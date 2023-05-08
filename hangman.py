@@ -155,6 +155,9 @@ class HangmanRunner:
         self.validators = validators if validators else {}
 
     def update_validators(self) -> None:
+        self.update_not_in_used_letters_validator()
+
+    def update_not_in_used_letters_validator(self):
         not_in_used_letters_validator = self.validators.get("not_in_used_letters", None)
         if not_in_used_letters_validator is not None:
             not_in_used_letters_validator.used_letters = self.used_letters
