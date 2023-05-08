@@ -2,7 +2,7 @@ import getpass
 
 from abc import ABC, abstractmethod
 from enum import Enum
-from typing import Callable, Dict, List, Tuple
+from typing import Callable, Dict, List, Optional, Tuple
 
 from dataclasses import dataclass, field
 
@@ -95,6 +95,10 @@ class InputGuessValidator(ABC):
     def run(self, guess: str):
         pass
 
+    @abstractmethod
+    def update_guess(self):
+        pass
+
 
 class AlphaValidator(InputGuessValidator):
     def run(self, guess: str) -> bool:
@@ -115,6 +119,15 @@ class NotInUsedLettersValidator(InputGuessValidator):
         return input("Please insert a letter you have not used before: ")
 
 
+@dataclass
+class SingleCharacterValidator(InputGuessValidator):
+    def run(self, guess: str) -> bool:
+        return len(guess) == 1
+
+    def update_guess(self) -> str:
+        return input("Please insert only a single character: ")
+
+
 def validate_input_string(
     guess: str, validators: Dict[str, InputGuessValidator]
 ) -> str:
@@ -132,17 +145,19 @@ def validate_input_string(
 
 
 class HangmanRunner:
-    def __init__(self, n_tries: int = 5):
+    def __init__(
+        self,
+        validators: Optional[Dict[str, List[InputGuessValidator]]] = None,
+        n_tries: int = 5,
+    ):
         self.n_tries = n_tries
         self.used_letters = []
-        self.validators = {
-            "is_alpha": AlphaValidator(),
-            "not_in_used_letters": NotInUsedLettersValidator(),
-        }
+        self.validators = validators if validators else {}
 
     def update_validators(self) -> None:
-        not_in_used_letters_validator = self.validators["not_in_used_letters"]
-        not_in_used_letters_validator.used_letters = self.used_letters
+        not_in_used_letters_validator = self.validators.get("not_in_used_letters", None)
+        if not_in_used_letters_validator is not None:
+            not_in_used_letters_validator.used_letters = self.used_letters
 
     def run(self, input_string) -> None:
         hidden_word = "-" * len(input_string)
@@ -191,6 +206,10 @@ class HangmanRunner:
 
 if __name__ == "__main__":
     hidden_input = getpass.getpass("Please insert a word: ")
-    validators = [AlphaValidator(), NotInUsedLettersValidator()]
-    runner = HangmanRunner(n_tries=5)
+    validators = {
+        "is_alpha": AlphaValidator(),
+        "not_in_used_letters": NotInUsedLettersValidator(),
+        "is_single_character": SingleCharacterValidator(),
+    }
+    runner = HangmanRunner(n_tries=5, validators=validators)
     print(runner.run(hidden_input))
