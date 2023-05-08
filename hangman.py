@@ -1,4 +1,5 @@
 import getpass
+
 from abc import ABC, abstractmethod
 from enum import Enum
 from typing import Callable, Dict, List, Tuple
@@ -75,11 +76,7 @@ def set_hangman_state() -> Callable:
 
 
 def find_char_index(input_string: str, char: str) -> List[int]:
-    char_indices = []
-    for idx, i in enumerate(input_string):
-        if i == char:
-            char_indices.append(idx)
-    return char_indices
+    return [idx for idx, c in enumerate(input_string) if c == char]
 
 
 def replace_guess_in_hidden(
@@ -103,6 +100,9 @@ class AlphaValidator(InputGuessValidator):
     def run(self, guess: str) -> bool:
         return guess.isalpha()
 
+    def update_guess(self) -> str:
+        return input("Please insert a letter and not any other symbol: ")
+
 
 @dataclass
 class NotInUsedLettersValidator(InputGuessValidator):
@@ -111,18 +111,24 @@ class NotInUsedLettersValidator(InputGuessValidator):
     def run(self, guess: str) -> bool:
         return guess not in self.used_letters
 
+    def update_guess(self) -> str:
+        return input("Please insert a letter you have not used before: ")
+
 
 def validate_input_string(
     guess: str, validators: Dict[str, InputGuessValidator]
 ) -> str:
-    while True:
-        input_string_is_valid = [
-            validator.run(guess) for validator in validators.values()
-        ]
-        if all(input_string_is_valid):
-            return guess
-        else:
-            guess = input("Please enter a valid guess: ")
+    guess_is_valid = False
+    while not guess_is_valid:
+        for validator in validators.values():
+            if not validator.run(guess):
+                guess = validator.update_guess()
+                return validate_input_string(guess, validators)
+            else:
+                continue
+        guess_is_valid = True
+
+    return guess
 
 
 class HangmanRunner:
@@ -135,7 +141,8 @@ class HangmanRunner:
         }
 
     def update_validators(self) -> None:
-        self.validators["not_in_used_letters"].used_letters = self.used_letters
+        not_in_used_letters_validator = self.validators["not_in_used_letters"]
+        not_in_used_letters_validator.used_letters = self.used_letters
 
     def run(self, input_string) -> None:
         hidden_word = "-" * len(input_string)
@@ -160,6 +167,7 @@ class HangmanRunner:
 
                 if input_string == hidden_word:
                     self.set_game_success_message(input_string)
+                    return None
 
             else:
                 print(next(hangman_state).value)
@@ -176,7 +184,7 @@ class HangmanRunner:
         else:
             print(f"\nSORRY! :( The hidden word was: {input_string}")
 
-    def set_game_success_message(input_string) -> None:
+    def set_game_success_message(self, input_string) -> None:
         print(f"\nCONGRATULATIONS! :) The hidden word was: {input_string}")
         return None
 
