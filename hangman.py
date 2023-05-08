@@ -147,18 +147,22 @@ def validate_input_string(
 class HangmanRunner:
     def __init__(
         self,
-        validators: Optional[Dict[str, List[InputGuessValidator]]] = None,
+        guess_char_validators: Optional[Dict[str, List[InputGuessValidator]]] = None,
         n_tries: int = 5,
     ):
         self.n_tries = n_tries
         self.used_letters = []
-        self.validators = validators if validators else {}
+        self.guess_char_validators = (
+            guess_char_validators if guess_char_validators else {}
+        )
 
-    def update_validators(self) -> None:
+    def update_guess_char_validators(self) -> None:
         self.update_not_in_used_letters_validator()
 
     def update_not_in_used_letters_validator(self):
-        not_in_used_letters_validator = self.validators.get("not_in_used_letters", None)
+        not_in_used_letters_validator = self.guess_char_validators.get(
+            "not_in_used_letters", None
+        )
         if not_in_used_letters_validator is not None:
             not_in_used_letters_validator.used_letters = self.used_letters
 
@@ -173,10 +177,10 @@ class HangmanRunner:
         while self.n_tries > 0:
             print(f"Used letters: {self.used_letters}")
             guess = input("\nPlease insert a letter: ")
-            guess = validate_input_string(guess, self.validators)
+            guess = validate_input_string(guess, self.guess_char_validators)
 
             self.used_letters.append(guess)
-            self.update_validators()
+            self.update_guess_char_validators()
 
             if guess in input_string:
                 hidden_word, hidden_word_list = replace_guess_in_hidden(
@@ -197,10 +201,16 @@ class HangmanRunner:
         self, n_tries: int, hidden_word: str, input_string: str
     ) -> None:
         if n_tries > 0:
-            print("\nRemaining n_tries:", n_tries)
-            print("Hidden word:", hidden_word)
+            self.set_continue_message(n_tries, hidden_word)
         else:
-            print(f"\nSORRY! :( The hidden word was: {input_string}")
+            self.set_fail_message(input_string)
+
+    def set_continue_message(self, n_tries: int, hidden_word: str) -> None:
+        print("\nRemaining n_tries:", n_tries)
+        print("Hidden word:", hidden_word)
+
+    def set_fail_message(self, input_string: str) -> None:
+        print(f"\nSORRY! :( The hidden word was: {input_string}")
 
     def set_game_success_message(self, input_string) -> None:
         print(f"\nCONGRATULATIONS! :) The hidden word was: {input_string}")
@@ -209,10 +219,10 @@ class HangmanRunner:
 
 if __name__ == "__main__":
     hidden_input = getpass.getpass("Please insert a word: ")
-    validators = {
+    guess_char_validators = {
         "is_alpha": AlphaValidator(),
         "not_in_used_letters": NotInUsedLettersValidator(),
         "is_single_character": SingleCharacterValidator(),
     }
-    runner = HangmanRunner(n_tries=5, validators=validators)
+    runner = HangmanRunner(n_tries=5, guess_char_validators=guess_char_validators)
     print(runner.run(hidden_input))
