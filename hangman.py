@@ -82,10 +82,6 @@ def find_char_index(input_string: str, char: str) -> List[int]:
     return char_indices
 
 
-def word_is_found(hidden_word: str, input_string: str) -> bool:
-    return hidden_word == input_string
-
-
 def replace_guess_in_hidden(
     input_string: str, guess: str, hidden_word_list: List[str]
 ) -> Tuple[str, List]:
@@ -162,20 +158,27 @@ class HangmanRunner:
                     input_string, guess, hidden_word_list
                 )
 
-                word_found = word_is_found(input_string, hidden_word)
-                if word_found:
-                    print(f"\nCONGRATULATIONS! :) The hidden word was: {input_string}")
-                    return None
+                if input_string == hidden_word:
+                    self.set_game_success_message(input_string)
 
             else:
                 print(next(hangman_state).value)
                 self.n_tries -= 1
 
-            if self.n_tries > 0:
-                print("\nRemaining n_tries:", self.n_tries)
-                print("Hidden word:", hidden_word)
-            else:
-                print(f"\nSORRY! :( The hidden word was: {input_string}")
+            self.set_game_status(self.n_tries, hidden_word, input_string)
+
+    def set_game_status(
+        self, n_tries: int, hidden_word: str, input_string: str
+    ) -> None:
+        if n_tries > 0:
+            print("\nRemaining n_tries:", n_tries)
+            print("Hidden word:", hidden_word)
+        else:
+            print(f"\nSORRY! :( The hidden word was: {input_string}")
+
+    def set_game_success_message(input_string) -> None:
+        print(f"\nCONGRATULATIONS! :) The hidden word was: {input_string}")
+        return None
 
 
 if __name__ == "__main__":
