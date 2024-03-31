@@ -1,0 +1,5 @@
+{
+    "square": {"a": 10},
+    "rectangle": {"a": 20, "b": 30},
+    "triangle": {"a": 3, "b": 4, "c": 5}
+}
