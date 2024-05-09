@@ -13,7 +13,7 @@ class SelfTransferError(Exception):
 @dataclass
 class Account:
     id: int
-    balance: float = 0
+    balance: float
 
     def deposit(self, amount: float) -> None:
         self.balance += amount
@@ -21,16 +21,17 @@ class Account:
     def withdraw(self, amount: float) -> None:
         if self.balance >= amount:
             self.balance -= amount
+
         else:
             raise InsufficientFundsError(
-                f"Could not withdraw amount {amount} due to insufficient funds"
+                f"Cannot withdraw {amount} due to insufficient funds"
             )
 
     def transfer_to(self, account: Self, amount: float) -> None:
         if self != account:
             self._transfer_to(account, amount)
         else:
-            raise SelfTransferError("Cannot apply self transfer")
+            raise SelfTransferError("Cannot transfer money from/to the same account id")
 
     def _transfer_to(self, account: Self, amount: float) -> None:
         if self.balance >= amount:
@@ -39,21 +40,39 @@ class Account:
 
         else:
             raise InsufficientFundsError(
-                f"Could not transfer amount {amount} to account with account_id: {account.id} due to insufficient funds"
+                f"Could not transfer amount {amount} to account_id: {account.id} from account_id: {self.id} due to insufficient funds."
             )
 
     def __eq__(self, account: Self) -> bool:
         return self.id == account.id
 
 
+def transfer(src: Account, dst: Account, amount: float) -> None:
+    valid = False
+    while not valid:
+        try:
+            src.transfer_to(dst, amount)
+            valid = True
+        except InsufficientFundsError:
+            amount = float(input("Please insert a different amount to transfer: "))
+
+
+def withdraw(account: Account, amount: float) -> None:
+    valid = False
+    while not valid:
+        try:
+            account.withdraw(amount)
+            valid = True
+        except InsufficientFundsError:
+            amount = float(input("Please insert a different amount to withdraw: "))
+
+
 if __name__ == "__main__":
     account_1 = Account(id=1, balance=10_000)
-    account_2 = Account(id=2, balance=500)
+    account_2 = Account(id=2, balance=1_000)
 
-    account_1.deposit(1_000)
-    account_1.withdraw(1500)
-    account_1.transfer_to(account_2, 2_000)
-    account_2.withdraw(50)
+    transfer(src=account_1, dst=account_2, amount=20_000)
+    withdraw(account_1, 10_000)
 
     print(account_1)
     print(account_2)
