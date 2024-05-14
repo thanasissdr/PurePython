@@ -1,10 +1,6 @@
 from dataclasses import dataclass
 from typing import Self
 
-from src import FILEPATH
-
-from .data_updater import update_file
-
 
 class InsufficientFundsError(Exception):
     pass
@@ -19,11 +15,9 @@ class Account:
     id: int
     balance: float
 
-    @update_file(FILEPATH)
     def deposit(self, amount: float) -> None:
         self.balance += amount
 
-    @update_file(FILEPATH)
     def withdraw(self, amount: float) -> None:
         if self.balance >= amount:
             self.balance -= amount
@@ -51,6 +45,10 @@ class Account:
 
     def __eq__(self, account: Self) -> bool:
         return self.id == account.id
+
+
+def deposit(account: Account, amount: float):
+    account.deposit(amount)
 
 
 def transfer(src: Account, dst: Account, amount: float) -> None:

@@ -1,12 +1,10 @@
-from typing import TYPE_CHECKING
+from src import FILEPATH
 
+from .account import Account, InsufficientFundsError
 from .file import read_csv, write_accounts_data
 
-if TYPE_CHECKING:
-    from .account import Account
 
-
-def update_data(account: "Account", data: list[dict]) -> list[dict]:
+def update_data(account: Account, data: list[dict]) -> list[dict]:
     """
     :param data: holding accounts data
     :type data: list[str]
@@ -23,12 +21,43 @@ def update_data(account: "Account", data: list[dict]) -> list[dict]:
 
 def update_file(filepath: str):
     def wrapper(f):
-        def inner(account, *args, **kwargs):
+        def inner(account: Account, *args, **kwargs):
             data = read_csv(filepath)
             f(account, *args, **kwargs)
             data_updated = update_data(account, data)
+
+            for arg in args:
+                if isinstance(arg, Account):
+                    data_updated = update_data(arg, data)
             write_accounts_data(filepath, data_updated)
 
         return inner
 
     return wrapper
+
+
+@update_file(FILEPATH)
+def deposit(account: Account, amount: float):
+    account.deposit(amount)
+
+
+@update_file(FILEPATH)
+def transfer(src: Account, dst: Account, amount: float) -> None:
+    valid = False
+    while not valid:
+        try:
+            src.transfer_to(dst, amount)
+            valid = True
+        except InsufficientFundsError:
+            amount = float(input("Please insert a different amount to transfer: "))
+
+
+@update_file(FILEPATH)
+def withdraw(account: Account, amount: float) -> None:
+    valid = False
+    while not valid:
+        try:
+            account.withdraw(amount)
+            valid = True
+        except InsufficientFundsError:
+            amount = float(input("Please insert a different amount to withdraw: "))
