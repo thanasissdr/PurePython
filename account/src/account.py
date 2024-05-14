@@ -1,6 +1,10 @@
 from dataclasses import dataclass
 from typing import Self
 
+from src import FILEPATH
+
+from .data_updater import update_file
+
 
 class InsufficientFundsError(Exception):
     pass
@@ -15,9 +19,11 @@ class Account:
     id: int
     balance: float
 
+    @update_file(FILEPATH)
     def deposit(self, amount: float) -> None:
         self.balance += amount
 
+    @update_file(FILEPATH)
     def withdraw(self, amount: float) -> None:
         if self.balance >= amount:
             self.balance -= amount
@@ -65,3 +71,28 @@ def withdraw(account: Account, amount: float) -> None:
             valid = True
         except InsufficientFundsError:
             amount = float(input("Please insert a different amount to withdraw: "))
+
+
+def retrieve_account_from_data(id: int, data: list[dict]) -> Account | None:
+    for account_data in data:
+        file_account_id = account_data["id"]
+
+        if str(id) == file_account_id:
+            balance = float(account_data["balance"])
+            return Account(id, balance)
+
+    return None
+
+
+def create_account(id: int) -> Account:
+    balance = input(f"Please insert initial amount for account {id}: ")
+    return Account(id, float(balance))
+
+
+def account_factory(id: int, data: list[dict]) -> Account:
+    account = retrieve_account_from_data(id, data)
+
+    if account is None:
+        account = create_account(id)
+
+    return account
