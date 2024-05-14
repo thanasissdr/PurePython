@@ -65,14 +65,3 @@ def withdraw(account: Account, amount: float) -> None:
             valid = True
         except InsufficientFundsError:
             amount = float(input("Please insert a different amount to withdraw: "))
-
-
-if __name__ == "__main__":
-    account_1 = Account(id=1, balance=10_000)
-    account_2 = Account(id=2, balance=1_000)
-
-    transfer(src=account_1, dst=account_2, amount=20_000)
-    withdraw(account_1, 10_000)
-
-    print(account_1)
-    print(account_2)
