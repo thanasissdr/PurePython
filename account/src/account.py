@@ -10,6 +10,10 @@ class SelfTransferError(Exception):
     pass
 
 
+class ZeroFundsError(Exception):
+    pass
+
+
 @dataclass
 class Account:
     id: int
@@ -19,7 +23,10 @@ class Account:
         self.balance += amount
 
     def withdraw(self, amount: float) -> None:
-        if self.balance >= amount:
+        if self.balance == 0:
+            raise ZeroFundsError("The balance is zero, thus cannot withdraw")
+
+        elif self.balance >= amount:
             self.balance -= amount
 
         else:
@@ -34,7 +41,10 @@ class Account:
             raise SelfTransferError("Cannot transfer money from/to the same account id")
 
     def _transfer_to(self, account: Self, amount: float) -> None:
-        if self.balance >= amount:
+        if self.balance == 0:
+            raise ZeroFundsError("The balance is zero, thus cannot transfer")
+
+        elif self.balance >= amount:
             self.balance -= amount
             account.balance += amount
 
@@ -43,32 +53,10 @@ class Account:
                 f"Could not transfer amount {amount} to account_id: {account.id} from account_id: {self.id} due to insufficient funds."
             )
 
+        return None
+
     def __eq__(self, account: Self) -> bool:
         return self.id == account.id
-
-
-def deposit(account: Account, amount: float):
-    account.deposit(amount)
-
-
-def transfer(src: Account, dst: Account, amount: float) -> None:
-    valid = False
-    while not valid:
-        try:
-            src.transfer_to(dst, amount)
-            valid = True
-        except InsufficientFundsError:
-            amount = float(input("Please insert a different amount to transfer: "))
-
-
-def withdraw(account: Account, amount: float) -> None:
-    valid = False
-    while not valid:
-        try:
-            account.withdraw(amount)
-            valid = True
-        except InsufficientFundsError:
-            amount = float(input("Please insert a different amount to withdraw: "))
 
 
 def retrieve_account_from_data(id: int, data: list[dict]) -> Account | None:

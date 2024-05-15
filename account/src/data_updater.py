@@ -4,7 +4,7 @@ from .account import Account, InsufficientFundsError
 from .file import read_csv, write_accounts_data
 
 
-def update_data(account: Account, data: list[dict]) -> list[dict]:
+def update_account_data(account: Account, data: list[dict]) -> list[dict]:
     """
     :param data: holding accounts data
     :type data: list[str]
@@ -21,14 +21,12 @@ def update_data(account: Account, data: list[dict]) -> list[dict]:
 
 def update_file(filepath: str):
     def wrapper(f):
-        def inner(account: Account, *args, **kwargs):
+        def inner(*args, **kwargs):
             data = read_csv(filepath)
-            f(account, *args, **kwargs)
-            data_updated = update_data(account, data)
-
+            f(*args, **kwargs)
             for arg in args:
                 if isinstance(arg, Account):
-                    data_updated = update_data(arg, data)
+                    data_updated = update_account_data(arg, data)
             write_accounts_data(filepath, data_updated)
 
         return inner
@@ -37,7 +35,7 @@ def update_file(filepath: str):
 
 
 @update_file(FILEPATH)
-def deposit(account: Account, amount: float):
+def deposit(account: Account, amount: float) -> None:
     account.deposit(amount)
 
 
