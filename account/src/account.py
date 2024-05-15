@@ -42,7 +42,9 @@ class Account:
 
     def _transfer_to(self, account: Self, amount: float) -> None:
         if self.balance == 0:
-            raise ZeroFundsError("The balance is zero, thus cannot transfer")
+            raise ZeroFundsError(
+                f"The balance of account_id:{self.id} is zero, thus cannot transfer"
+            )
 
         elif self.balance >= amount:
             self.balance -= amount

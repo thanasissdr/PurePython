@@ -6,7 +6,7 @@ from src.file import read_csv
 if __name__ == "__main__":
     data = read_csv(FILEPATH)
 
-    account_1 = account_factory(id=1, data=data)
+    account_1 = account_factory(id=9, data=data)
     account_2 = account_factory(id=2, data=data)
 
     transfer(account_1, account_2, 20)
