@@ -18,18 +18,7 @@ def file_not_found_handler(f):
     return inner
 
 
-def file_empty_handler(f):
-    @wraps(f)
-    def inner(filepath: str, *args, **kwargs):
-        if os.path.getsize(filepath) == 0:
-            raise EmptyFileError(f"The file {filepath} is empty")
-        return f(filepath, *args, **kwargs)
-
-    return inner
-
-
 @file_not_found_handler
-@file_empty_handler
 def read_csv(filepath: str):
     with open(filepath, "r") as f:
         reader = csv.DictReader(f)
