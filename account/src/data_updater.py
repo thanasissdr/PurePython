@@ -4,19 +4,19 @@ from .account import Account, InsufficientFundsError
 from .file import read_csv, write_accounts_data
 
 
-def update_account_data(account: Account, data: list[dict]) -> list[dict]:
+def update_account_data(account: Account, accounts_data: list[dict]) -> list[dict]:
     """
     :param data: holding accounts data
     :type data: list[str]
     """
 
-    for account_data in data:
+    for account_data in accounts_data:
         if account_data["id"] == str(account.id):
             account_data["balance"] = account.balance
-            return data
+            return accounts_data
 
-    data.append({"id": account.id, "balance": account.balance})
-    return data
+    accounts_data.append({"id": account.id, "balance": account.balance})
+    return accounts_data
 
 
 def update_file(filepath: str):
