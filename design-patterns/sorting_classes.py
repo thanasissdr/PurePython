@@ -4,51 +4,55 @@ from random import shuffle
 
 
 @dataclass
-class AbstractSortStrategy[T: str | float](ABC):
+class AbstractSortStrategy[T](ABC):
     @abstractmethod
     def run(self, data: list[T]) -> list[T]:
         pass
 
 
 @dataclass
-class Monotone(AbstractSortStrategy):
+class Monotone[T: (int, float, str)](AbstractSortStrategy[T]):
     reverse: bool
 
-    def run(self, data):
+    def run(self, data: list[T]):
         return sorted(data, reverse=self.reverse)
 
 
 @dataclass
-class Ascending(Monotone):
+class Ascending[T: (int, float, str)](Monotone[T]):
     reverse: bool = False
 
 
 @dataclass
-class Descending(Monotone):
+class Descending[T: (int, float, str)](Monotone[T]):
     reverse: bool = True
 
 
-class Identity(AbstractSortStrategy):
-    def run(self, data):
+class Identity[T: (int, float, str)](AbstractSortStrategy[T]):
+    def run(self, data: list[T]):
         return data
 
 
-class Shuffle(AbstractSortStrategy):
-    def run(self, data):
+class Shuffle[T: (int, float, str)](AbstractSortStrategy[T]):
+    def run(self, data: list[T]):
         _data = data.copy()
         shuffle(_data)
         return _data
 
 
-def sort_strategy_factory(sort_strategy: str) -> AbstractSortStrategy:
-    available_sort_strategies = {
+def sort_strategy_factory[T: (str, int, float)](
+    sort_strategy: str,
+) -> AbstractSortStrategy[T]:
+    available_sort_strategies: dict[str, AbstractSortStrategy[T]] = {
         "ascending": Ascending(),
         "descending": Descending(),
         "identity": Identity(),
         "shuffle": Shuffle(),
     }
 
-    selected_sort_strategy = available_sort_strategies.get(sort_strategy)
+    selected_sort_strategy: AbstractSortStrategy[T] | None = (
+        available_sort_strategies.get(sort_strategy)
+    )
     if selected_sort_strategy is None:
         raise KeyError(
             f"Sort strategy '{sort_strategy}' is not supported. Available sort strategies are {list(available_sort_strategies)}"
@@ -57,8 +61,10 @@ def sort_strategy_factory(sort_strategy: str) -> AbstractSortStrategy:
     return selected_sort_strategy
 
 
-def main[T: str | float](data: list[T], sort_strategy: str) -> list[T]:
-    sort_strategy_instance = sort_strategy_factory(sort_strategy)
+def main[T: (int, str, float)](data: list[T], sort_strategy: str) -> list[T]:
+    sort_strategy_instance: AbstractSortStrategy[T] = sort_strategy_factory(
+        sort_strategy
+    )
     return sort_strategy_instance.run(data)
 
 
