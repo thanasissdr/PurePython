@@ -1,4 +1,4 @@
-from .shapes import Rectangle, Square, Triangle
+from .shapes import Circle, Rectangle, Square, Triangle
 
 
 class SquareFactory:
@@ -16,11 +16,17 @@ class TriangleFactory:
         return Triangle(a, b, c)
 
 
+class CircleFactory:
+    def create(self, r: float) -> Circle:
+        return Circle(r)
+
+
 def get_shape_factory(shape: str) -> SquareFactory | RectangleFactory | TriangleFactory:
     available_shape_factories = {
         "square": SquareFactory(),
         "rectangle": RectangleFactory(),
         "triangle": TriangleFactory(),
+        "circle": CircleFactory(),
     }
 
     selected_shape_factory = available_shape_factories.get(shape)

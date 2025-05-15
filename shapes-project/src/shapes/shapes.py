@@ -14,6 +14,10 @@ class AbstractShape(ABC):
     def get_perimeter(self) -> float:
         pass
 
+    @abstractmethod
+    def get_params(self) -> dict:
+        pass
+
 
 @dataclass
 class Square(AbstractShape):
@@ -24,6 +28,9 @@ class Square(AbstractShape):
 
     def get_perimeter(self) -> float:
         return 4 * self.a
+
+    def get_params(self):
+        return {"a": self.a}
 
 
 @dataclass
@@ -36,6 +43,9 @@ class Rectangle(AbstractShape):
 
     def get_perimeter(self) -> float:
         return 2 * self.a + 2 * self.b
+
+    def get_params(self):
+        return {"a": self.a, "b": self.b}
 
 
 @dataclass
@@ -61,3 +71,20 @@ class Triangle(AbstractShape):
 
     def get_perimeter(self):
         return self.a + self.b + self.c
+
+    def get_params(self):
+        return {"a": self.a, "b": self.b, "c": self.c}
+
+
+@dataclass
+class Circle(AbstractShape):
+    r: float
+
+    def get_area(self):
+        return math.pi * self.r**2
+
+    def get_perimeter(self):
+        return 2 * math.pi * self.r
+
+    def get_params(self):
+        return {"r": self.r}

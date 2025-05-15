@@ -1,32 +1,42 @@
 import pprint as pp
 from functools import partial
 
-from src.shapes.build import AbstractShape, shape_builder_factory
-from src.utils import load_json
+from src.shapes.factories import get_shape_factory
+from src.shapes.shapes import AbstractShape
+from src.utils.file.read import load_json
 
 
-def create_shape(config_path: str, shape: str) -> AbstractShape:
-    config = load_json(config_path)
-    shape_builder = shape_builder_factory(config)
-    shape_instance = shape_builder.run(shape)
-    return shape_instance
+def get_shape_from_config(config: dict, shape: str) -> AbstractShape:
+    shape_config = config.get(shape, {})
+    shape_factory = get_shape_factory(shape)
+    return shape_factory.create(**shape_config)
 
 
-def main(config_path: str, shape: str) -> dict:
-    shape_obj = create_shape(config_path, shape)
-    shape_area = shape_obj.get_area()
-    shape_perimeter = shape_obj.get_perimeter()
+def get_shape_chars(shape: AbstractShape) -> dict:
+    shape_area = shape.get_area()
+    shape_perimeter = shape.get_perimeter()
 
     return {
-        "shape": shape_obj,
+        "shape": shape.__class__.__name__,
+        "shape_params": shape.get_params(),
         "shape_area": shape_area,
         "shape_perimeter": shape_perimeter,
     }
 
 
-if __name__ == "__main__":
-    CONFIG_PATH = "./shapes-project/config.json"
-    main_fixed_config = partial(main, config_path=CONFIG_PATH)
+def run(config_path: str, shape: str) -> dict:
+    config = load_json(config_path)
+    shape_instance = get_shape_from_config(config, shape)
+    return get_shape_chars(shape_instance)
 
-    SHAPE = "rectangle"
+
+def main():
+    CONFIG_PATH = "config.json"
+    main_fixed_config = partial(run, config_path=CONFIG_PATH)
+
+    SHAPE = "circle"
     pp.pprint(main_fixed_config(shape=SHAPE))
+
+
+if __name__ == "__main__":
+    main()
